@@ -13,3 +13,7 @@ The 1PL model is used throughout:
 $$
 Pr(X=1) = \frac{exp(\theta-b)}{1 + exp(\theta-b)}
 $$
+
+## Randomly Generated Candidates
+
+You can run the `generateCandidates.ipynb` notebook if you want to randomly generated the `candidates.csv` file. Change the `MAX_CANDIDATES` value to specify the number of candidates you want to generate.
