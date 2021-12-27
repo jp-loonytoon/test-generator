@@ -20,8 +20,6 @@ ipython_config.py
 
 
 data/*
-!data/items.csv
-
 test*/*
 
 .DS_Store
