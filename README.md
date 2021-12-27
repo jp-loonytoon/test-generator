@@ -2,6 +2,26 @@
 
 Create a `data` folder with candidate and item info in it. Then run a notebook to create simulated test data.
 
+## Setup
+
+The easiest way to setup and run the notebooks is to install Jupyter and the associated dependencies using `conda`. Run the following command to install the necessary libraries:
+
+```bash
+conda env create
+```
+
+Then activate the `trinity` environment like this:
+
+```bash
+conda activate trinity
+```
+
+Finally, run this command to start the Jupyter environment:
+
+```bash
+jupyter notebook
+```
+
 ## Simulated Test Generation Notebooks
 
 Run either `generateTest.ipynb` or `generateTestGirth.ipynb` to generate a randomised test response from that data. The resulting test responses are saved to `data/results.csv`.
