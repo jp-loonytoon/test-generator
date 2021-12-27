@@ -21,7 +21,6 @@ ipython_config.py
 
 data/*
 !data/items.csv
-!data/candidates.csv
 
 .DS_Store
 .DS_Store?
