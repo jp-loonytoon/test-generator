@@ -17,3 +17,11 @@ $$
 ## Randomly Generated Candidates
 
 You can run the `generateCandidates.ipynb` notebook if you want to randomly generated the `candidates.csv` file. Change the `MAX_CANDIDATES` value to specify the number of candidates you want to generate.
+
+## Derived Items
+
+You can run the `convertItemInfo.py` script to produce an `items.csv` file from the `DELTdata.xlsx` if you need to. This script runs through the header info (rows 1-3), and ignores any candidate data. If there is no difficulty value (row 1), then a value of 0.0 is assumed. You should run the file like this:
+
+```bash
+./convertItemInfo.py data/DELTdata.xlsx
+```
