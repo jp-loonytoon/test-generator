@@ -20,8 +20,7 @@ ipython_config.py
 
 
 data/*
-!data/items.csv
-!data/candidates.csv
+test*/*
 
 .DS_Store
 .DS_Store?

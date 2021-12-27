@@ -1,0 +1,12 @@
+name: trinity
+dependencies:
+- python=3
+- jupyter
+- pandas
+- numpy
+- seaborn
+- openpyxl
+- faker
+- pip
+- pip:
+    - girth
