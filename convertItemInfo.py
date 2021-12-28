@@ -22,8 +22,6 @@ A_PARAM = 1.0
 def lookupCefrFromRange(b: float) -> str:
     assert -9.999 <= b <= 9.999
 
-    print("Difficult = {}".format(b))
-
     cefrLookups = {
         'Pre-A1': [-9.999, -5.000],
         'A1': [-5.000, -3.700],
@@ -74,6 +72,7 @@ def loadItemInfo(ws) -> List[Tuple]:
     sheet_name = ws.title
     headerRange = ws['D1':'DX3']
     dfHeader = pd.DataFrame(headerRange)
+    sID = 0         # used to track scalar IDs
 
     for col in dfHeader.columns:
         a = A_PARAM                         # item discrimination
@@ -85,16 +84,9 @@ def loadItemInfo(ws) -> List[Tuple]:
         maxValue = dfHeader[col][1].value
         isDichotomous = (maxValue == 1)
         uiid = dfHeader[col][2].value
-        print("Item ID = {}".format(uiid))
-        if uiid is None:
-            print("Empty Item ID - skipping this item...")
-            continue
-        else:
-            cefr = getCefrRating(uiid, b)
-
-        item = (uiid, a, b, se, cefr)
+        cefr = getCefrRating(uiid, b)
+        item = (uiid, a, b, se, cefr, maxValue)
         print("Adding item {}".format(item))
-
         itemList.append(item)
 
     return itemList
@@ -103,7 +95,7 @@ def loadItemInfo(ws) -> List[Tuple]:
 def outputItemsToFile(itemsFile, items):
     with open(itemsFile, 'w', newline='') as csvfile:
         item_writer = csv.writer(csvfile)
-        item_writer.writerow(('UIID', 'a', 'b', 'se', 'rating'))
+        item_writer.writerow(('UIID', 'a', 'b', 'se', 'rating', 'maxvalue'))
         for i in items:
             item_writer.writerow(i)
 
