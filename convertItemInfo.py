@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-# Reads in the DELTdata.xlsx and uses the item info to create a new `items.csv` file.
+# Reads in the DELTdata.xlsx and uses the item info to
+# create a new `items.csv` file.
 
 import argparse
 import sys
 import openpyxl as xls
 import csv
 import pandas as pd
-from typing import List, Tuple
 
 
 DEFAULT_INFILE = "data/DELTdata.xlsx"
@@ -61,18 +61,17 @@ def loadXLS(file):
     return wb
 
 
-def loadItemInfo(ws) -> List[Tuple]:
+def loadItemInfo(ws):
     """Go through all the items in the worksheet
     and create the list of items
 
     :param ws: a worksheet object
+    :return: list of items (tuples)
     """
     itemList = []
 
-    sheet_name = ws.title
     headerRange = ws['D1':'DX3']
     dfHeader = pd.DataFrame(headerRange)
-    sID = 0         # used to track scalar IDs
 
     for col in dfHeader.columns:
         a = A_PARAM                         # item discrimination
@@ -82,11 +81,9 @@ def loadItemInfo(ws) -> List[Tuple]:
             b = float(dfHeader[col][0].value)   # item difficulty
         se = 0.0                            # assume zero error for now
         maxValue = dfHeader[col][1].value
-        isDichotomous = (maxValue == 1)
         uiid = dfHeader[col][2].value
         cefr = getCefrRating(uiid, b)
         item = (uiid, a, b, se, cefr, maxValue)
-        print("Adding item {}".format(item))
         itemList.append(item)
 
     return itemList
@@ -123,8 +120,8 @@ def main():
             sheetname = sheet.title
             items = loadItemInfo(sheet)
     finally:
-        if not items is None:
-            print("{} contains {} items".format(sheetname, len(items)))
+        if items is not None:
+            print("{} containing {} items converted into: {}".format(sheetname, len(items), DEFAULT_OUTFILE))
             outputItemsToFile(DEFAULT_OUTFILE, items)
         else:
             print("No items found in {} from {}".format(sheetname, xlsFile))
