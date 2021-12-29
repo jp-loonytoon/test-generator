@@ -92,7 +92,7 @@ def loadItemInfo(ws):
 def outputItemsToFile(itemsFile, items):
     with open(itemsFile, 'w', newline='') as csvfile:
         item_writer = csv.writer(csvfile)
-        item_writer.writerow(('UIID', 'a', 'b', 'se', 'rating', 'maxvalue'))
+        item_writer.writerow(('UIID', 'a', 'b', 'se', 'rating', 'k'))
         for i in items:
             item_writer.writerow(i)
 
