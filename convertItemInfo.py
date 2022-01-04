@@ -41,12 +41,15 @@ def lookupCefrFromRange(b: float) -> str:
 
 
 def getCefrRating(uiid: str, b: float) -> str:
-    cefrPrefix = uiid[:2]
-    if cefrPrefix in ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']:
-        cefr = cefrPrefix
-    else:
-        # estimate the CEFR for the item
+    if len(uiid) < 3:
         cefr = lookupCefrFromRange(b)
+    else:
+        cefrPrefix = uiid[:2]
+        if cefrPrefix in ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']:
+            cefr = cefrPrefix
+        else:
+            # estimate the CEFR for the item
+            cefr = lookupCefrFromRange(b)
 
     return cefr
 
@@ -82,9 +85,10 @@ def loadItemInfo(ws):
         se = 0.0                            # assume zero error for now
         maxValue = dfHeader[col][1].value
         uiid = dfHeader[col][2].value
-        cefr = getCefrRating(uiid, b)
-        item = (uiid, a, b, se, cefr, maxValue)
-        itemList.append(item)
+        if uiid is not None:
+            cefr = getCefrRating(uiid, b)
+            item = (uiid, a, b, se, cefr, maxValue)
+            itemList.append(item)
 
     return itemList
 
