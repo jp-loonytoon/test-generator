@@ -3,6 +3,7 @@
 # Reads in the DELTdata.xlsx and uses the item info to
 # create a new `items.csv` file.
 
+
 import argparse
 import sys
 import openpyxl as xls
@@ -72,7 +73,6 @@ def loadItemInfo(ws):
     :return: list of items (tuples)
     """
     itemList = []
-
     headerRange = ws['D1':'DX3']
     dfHeader = pd.DataFrame(headerRange)
 
