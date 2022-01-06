@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 
-# Reads in the DELTdata.xlsx and uses the item info to create a new `items.csv` file.
+# Reads in the DELTdata.xlsx and uses the item info to
+# create a new `items.csv` file.
+
 
 import argparse
 import sys
 import openpyxl as xls
 import csv
 import pandas as pd
-from typing import List, Tuple
 
 
 DEFAULT_INFILE = "data/DELTdata.xlsx"
@@ -21,8 +22,6 @@ A_PARAM = 1.0
 # CEFR associated with it
 def lookupCefrFromRange(b: float) -> str:
     assert -9.999 <= b <= 9.999
-
-    print("Difficult = {}".format(b))
 
     cefrLookups = {
         'Pre-A1': [-9.999, -5.000],
@@ -43,12 +42,15 @@ def lookupCefrFromRange(b: float) -> str:
 
 
 def getCefrRating(uiid: str, b: float) -> str:
-    cefrPrefix = uiid[:2]
-    if cefrPrefix in ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']:
-        cefr = cefrPrefix
-    else:
-        # estimate the CEFR for the item
+    if len(uiid) < 3:
         cefr = lookupCefrFromRange(b)
+    else:
+        cefrPrefix = uiid[:2]
+        if cefrPrefix in ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']:
+            cefr = cefrPrefix
+        else:
+            # estimate the CEFR for the item
+            cefr = lookupCefrFromRange(b)
 
     return cefr
 
@@ -63,15 +65,14 @@ def loadXLS(file):
     return wb
 
 
-def loadItemInfo(ws) -> List[Tuple]:
+def loadItemInfo(ws):
     """Go through all the items in the worksheet
     and create the list of items
 
     :param ws: a worksheet object
+    :return: list of items (tuples)
     """
     itemList = []
-
-    sheet_name = ws.title
     headerRange = ws['D1':'DX3']
     dfHeader = pd.DataFrame(headerRange)
 
@@ -83,19 +84,11 @@ def loadItemInfo(ws) -> List[Tuple]:
             b = float(dfHeader[col][0].value)   # item difficulty
         se = 0.0                            # assume zero error for now
         maxValue = dfHeader[col][1].value
-        isDichotomous = (maxValue == 1)
         uiid = dfHeader[col][2].value
-        print("Item ID = {}".format(uiid))
-        if uiid is None:
-            print("Empty Item ID - skipping this item...")
-            continue
-        else:
+        if uiid is not None:
             cefr = getCefrRating(uiid, b)
-
-        item = (uiid, a, b, se, cefr)
-        print("Adding item {}".format(item))
-
-        itemList.append(item)
+            item = (uiid, a, b, se, cefr, maxValue)
+            itemList.append(item)
 
     return itemList
 
@@ -103,7 +96,7 @@ def loadItemInfo(ws) -> List[Tuple]:
 def outputItemsToFile(itemsFile, items):
     with open(itemsFile, 'w', newline='') as csvfile:
         item_writer = csv.writer(csvfile)
-        item_writer.writerow(('UIID', 'a', 'b', 'se', 'rating'))
+        item_writer.writerow(('UIID', 'a', 'b', 'se', 'rating', 'k'))
         for i in items:
             item_writer.writerow(i)
 
@@ -131,8 +124,8 @@ def main():
             sheetname = sheet.title
             items = loadItemInfo(sheet)
     finally:
-        if not items is None:
-            print("{} contains {} items".format(sheetname, len(items)))
+        if items is not None:
+            print("{} containing {} items converted into: {}".format(sheetname, len(items), DEFAULT_OUTFILE))
             outputItemsToFile(DEFAULT_OUTFILE, items)
         else:
             print("No items found in {} from {}".format(sheetname, xlsFile))
