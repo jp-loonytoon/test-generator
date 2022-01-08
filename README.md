@@ -26,7 +26,6 @@ jupyter notebook
 
 In case you need to install the R kernel for your Jupyter environment, follow the instructions here: https://richpauloo.github.io/2018-05-16-Installing-the-R-kernel-in-Jupyter-Lab/.
 
-
 ## Simulated Test Generation Notebooks
 
 Run either `generateTest.ipynb` or `generateTestGirth.ipynb` to generate a randomised test response from that data. The resulting test responses are saved to `data/results.csv`.
@@ -50,3 +49,4 @@ You can run the `convertItemInfo.py` script to produce an `items.csv` file from 
 ```bash
 ./convertItemInfo.py data/DELTdata.xlsx
 ```
+
