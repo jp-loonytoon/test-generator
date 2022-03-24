@@ -1,8 +1,10 @@
 # Test Generator
 
-Create a `data` folder with candidate and item info in it. Then run a notebook to create simulated test data.
+This data project will allow you to create a simulated test for learners of English. Once you have a simulated test you can then use Item Response Test (IRT) tools to process them.
 
 ## Setup
+
+First, create a `data` folder with candidate and item info in it. Then run the notebooks to create simulated candidate and test data.
 
 The easiest way to setup and run the notebooks is to install Jupyter and the associated dependencies using `conda`. Run the following command to install the necessary libraries:
 
@@ -26,6 +28,17 @@ jupyter notebook
 
 In case you need to install the R kernel for your Jupyter environment, follow the instructions here: https://richpauloo.github.io/2018-05-16-Installing-the-R-kernel-in-Jupyter-Lab/.
 
+## Randomly Generated Candidates
+
+You can run the `generateCandidates.ipynb` notebook if you want to randomly generate a `candidates.csv` file. Change the `MAX_CANDIDATES` value to specify the number of candidates you want to generate.
+
+## Derived Items
+
+You can run the `convertItemInfo.py` script to produce an `items.csv` file from the `DTLR370cands90items.csv` source file if you need to. This script runs through the header info (rows 1-2), ignoring any candidate data.:
+
+```bash
+./convertItemInfo.py data/DTLR370cands90items.csv
+```
 
 ## Simulated Test Generation Notebooks
 
@@ -39,14 +52,7 @@ $$
 Pr(X=1) = \frac{exp(\theta-b)}{1 + exp(\theta-b)}
 $$
 
-## Randomly Generated Candidates
 
-You can run the `generateCandidates.ipynb` notebook if you want to randomly generated the `candidates.csv` file. Change the `MAX_CANDIDATES` value to specify the number of candidates you want to generate.
+### 'Hi' and 'Lo' test cohorts
 
-## Derived Items
-
-You can run the `convertItemInfo.py` script to produce an `items.csv` file from the `DELTdata.xlsx` if you need to. This script runs through the header info (rows 1-3), and ignores any candidate data. If there is no difficulty value (row 1), then a value of 0.0 is assumed. You should run the file like this:
-
-```bash
-./convertItemInfo.py data/DELTdata.xlsx
-```
+When running the test candidates will be randomly placed into a 'Hi' or a 'Lo' test cohort. Those in the 'Hi' cohort will not take 'Li' items into the test - and vice versa.

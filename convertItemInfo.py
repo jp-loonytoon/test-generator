@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 
-# Reads in the DELTdata.xlsx and uses the item info to
+# Reads in the DTLR370cands90items.csv file and uses the item info to
 # create a new `items.csv` file.
 
 
 import argparse
 import sys
-import openpyxl as xls
 import csv
 import pandas as pd
 
 
-DEFAULT_INFILE = "data/DELTdata.xlsx"
+DEFAULT_INFILE = "data/DTLR370cands90items.csv"
 DEFAULT_OUTFILE = "data/items.csv"
 
 # we fix the discrimination (a) param to this value (assumes 1PL model)
@@ -55,36 +54,40 @@ def getCefrRating(uiid: str, b: float) -> str:
     return cefr
 
 
-def loadXLS(file):
-    """Load the DELTdata.xlsx file that contains the details of each item
-    :param file: the XLS file to import
-    :return: an Excel workbook object
+def loadCSV(file):
+    """Load the source file that contains the details of each item
+    :param file: the CSV file to import
+    :return: the header rows we're interested in
     """
-    wb = xls.load_workbook(file, data_only=True, read_only=True)
+    with open(file, 'r') as csvfile:
+        csv_reader = csv.reader(csvfile)
+        rows = list(csv_reader)
 
-    return wb
+    headerRows = rows[:2]
+    return headerRows
 
 
-def loadItemInfo(ws):
-    """Go through all the items in the worksheet
-    and create the list of items
+def loadItemInfo(rows):
+    """Go through all the item data in the input file
+    and create the list of test items
 
-    :param ws: a worksheet object
+    :param rows: a worksheet object
     :return: list of items (tuples)
     """
     itemList = []
-    headerRange = ws['D1':'DX3']
-    dfHeader = pd.DataFrame(headerRange)
+    
+    numItems = len(rows[0])
 
-    for col in dfHeader.columns:
-        a = A_PARAM                         # item discrimination
-        if dfHeader[col][0].value is None:
+    for i in range(1, numItems):
+        uiid = rows[0][i]
+        if rows[1][i] is None:
             b = 0.0
         else:
-            b = float(dfHeader[col][0].value)   # item difficulty
-        se = 0.0                            # assume zero error for now
-        maxValue = dfHeader[col][1].value
-        uiid = dfHeader[col][2].value
+            b = float(rows[1][i])   # item difficulty
+        a = A_PARAM
+        se = 0.0
+        maxValue = 1
+
         if uiid is not None:
             cefr = getCefrRating(uiid, b)
             item = (uiid, a, b, se, cefr, maxValue)
@@ -105,30 +108,28 @@ def main():
     argparser = argparse.ArgumentParser(
         description="Assign items to modules (and panels)"
     )
-    argparser.add_argument('infile', help="input (XLS) file to parse",
+    argparser.add_argument('infile', help="input (CSV) file to parse",
                            nargs='?', default=DEFAULT_INFILE)
     args = argparser.parse_args()
 
-    # load the XLS file
-    xlsFile = args.infile
+    # load the CSV file
+    csvFile = args.infile
     try:
-        print("Loading data from local storage: {}".format(xlsFile))
-        wbOPT = loadXLS(xlsFile)
+        print("Loading data from local storage: {}".format(csvFile))
+        rows = loadCSV(csvFile)
     except FileNotFoundError as e:
         print(f"Error loading file: {e}")
         sys.exit(1)
 
     items = None
     try:
-        for sheet in wbOPT:
-            sheetname = sheet.title
-            items = loadItemInfo(sheet)
+        items = loadItemInfo(rows)
     finally:
         if items is not None:
-            print("{} containing {} items converted into: {}".format(sheetname, len(items), DEFAULT_OUTFILE))
+            print("{} containing {} items converted into: {}".format(csvFile, len(items), DEFAULT_OUTFILE))
             outputItemsToFile(DEFAULT_OUTFILE, items)
         else:
-            print("No items found in {} from {}".format(sheetname, xlsFile))
+            print("No items found in {}".format(csvFile))
 
 
 if __name__ == "__main__":
