@@ -4,6 +4,7 @@ dependencies:
 - flake8
 - mypy
 - jupyter
+- jupyterlab
 - pandas
 - numpy
 - seaborn

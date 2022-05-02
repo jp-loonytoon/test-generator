@@ -21,7 +21,10 @@ ipython_config.py
 
 .Rhistory
 
+ability-distribution.png
+
 data/*
+Plots/*
 test*/*
 
 .DS_Store
