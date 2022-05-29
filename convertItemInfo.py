@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Reads in the DTLR370cands90items.csv file and uses the item info to
+# Reads in the DTR19VG34Rsimulate.csv file and uses the item info to
 # create a new `items.csv` file.
 
 
@@ -10,12 +10,16 @@ import csv
 import pandas as pd
 
 
-DEFAULT_INFILE = "data/DTLR370cands90items.csv"
+DEFAULT_INFILE = "data/DTR19VG34Rsimulate.csv"
 DEFAULT_OUTFILE = "data/items.csv"
 
 # we fix the discrimination (a) param to this value (assumes 1PL model)
 A_PARAM = 1.0
 
+ROW_ID = 1
+ROW_B = 0
+
+COL_START = 2
 
 # from a difficulty value `b` return the corresponding
 # CEFR associated with it
@@ -78,12 +82,12 @@ def loadItemInfo(rows):
     
     numItems = len(rows[0])
 
-    for i in range(1, numItems):
-        uiid = rows[0][i]
-        if rows[1][i] is None:
+    for i in range(COL_START, numItems):
+        uiid = rows[ROW_ID][i]
+        if rows[ROW_B][i] is None:
             b = 0.0
         else:
-            b = float(rows[1][i])   # item difficulty
+            b = float(rows[ROW_B][i])   # item difficulty
         a = A_PARAM
         se = 0.0
         maxValue = 1
